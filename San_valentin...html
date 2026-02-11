@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz San Valentín</title>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffd1dc, #ffe6eb);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card {
+      width: 500px;
+      height: 560px;
+      margin-top: 50px;
+      perspective: 1200px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .card:hover .outside {
+      transform: rotateY(-130deg);
+    }
+
+    .outside, .inside {
+      height: 100%;
+      width: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+    }
+
+    .outside {
+      transform-style: preserve-3d;
+      transform-origin: left;
+      transition: transform 2s;
+      z-index: 1;
+    }
+
+    .inside {
+      background: linear-gradient(to right, #fff5f7, #ffffff);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden; /* 🔒 evita desbordes */
+    }
+
+    .front {
+      background: linear-gradient(135deg, #b11226, #e91e63);
+      backface-visibility: hidden;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .front p {
+      font-size: 24px;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .back {
+      transform: rotateY(180deg);
+      backface-visibility: hidden;
+      background-color: #f8d7da;
+      height: 100%;
+    }
+
+    /* 🔹 TEXTO PRINCIPAL AJUSTADO */
+    .inside p {
+      font-size: 15px;
+      color: #5a2a2a;
+      margin: 6px 0;
+      line-height: 1.45;
+      text-align: justify;
+    }
+
+    .inside h1 {
+      font-size: 30px;
+      margin: 6px 0;
+      color: #c2185b;
+      text-align: center;
+    }
+
+    .fecha {
+      font-size: 13px;
+      color: #a14a5a;
+      margin-bottom: 6px;
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* 🔹 MENSAJE ESPECIAL CONTROLADO */
+    .mensaje-especial {
+      margin: 6px 0;
+      padding: 8px;
+      background-color: #fff0f3;
+      border-radius: 8px;
+      font-style: italic;
+      border: 1px solid #f3c2cc;
+    }
+
+    .mensaje-especial p {
+      font-size: 14px;
+      margin: 4px 0;
+      line-height: 1.45;
+    }
+
+    .footer {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 15px;
+      color: #7a2e3a;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card" id="card">
+    <div class="outside">
+      <div class="front">
+        <p>Feliz San Valentín 💘</p>
+      </div>
+      <div class="back"></div>
+    </div>
+
+    <div class="inside">
+
+      <div class="fecha" id="fecha"></div>
+
+      <div class="texto-original">
+        <p>
+          No hay palabras suficientes, pero aun así lo intento…  
+          porque lo que siento por ti no cabe en el silencio 🌹✨.
+        </p>
+
+        <p>
+          Te amo sin condiciones, sin medidas y sin explicaciones,  
+          como se ama cuando el corazón ya decidió ❤️.
+        </p>
+
+        <p>
+          Te amo en lo simple y en lo eterno,  
+          en lo que se dice y en lo que se calla 💫.
+        </p>
+      </div>
+
+      <div class="mensaje-especial">
+        <p><strong>Mi amor,</strong></p>
+
+        <p>
+          Te amo porque sí,  
+          porque no existe otra forma más honesta de sentir 💘.
+        </p>
+
+        <p>
+          Y aunque el tiempo avance,  
+          mi sentimiento por ti permanece 🌹✨.
+        </p>
+      </div>
+
+      <h1>❤️</h1>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>1. Abre esta carta y deja que la música diga lo que mi voz no siempre sabe expresar 🎶</p>
+    <p>2. Hoy no escribo promesas, escribo verdades: Te amo muchisimo💘</p>
+    <p>3. Con todo mi amor — Tiffa, su niña enamorada.🤍</p>
+  </div>
+
+  <audio id="audioPlayer">
+    <source src="https://www.dropbox.com/scl/fi/uviqnho7avukhht5lobvo/Ricardo-Montaner-Te-Amo-y-Te-Amo..mp3?rlkey=hq1nfvtzessswcgyp297ddzma&dl=1" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const card = document.getElementById('card');
+    const audio = document.getElementById('audioPlayer');
+    const fechaElemento = document.getElementById('fecha');
+
+    let abierta = false;
+    let fadeInterval = null;
+
+    fechaElemento.textContent =
+      "📅 " + new Date().toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+    function fadeOutAudio() {
+      clearInterval(fadeInterval);
+      fadeInterval = setInterval(() => {
+        if (audio.volume > 0.05) {
+          audio.volume -= 0.05;
+        } else {
+          audio.volume = 0;
+          audio.pause();
+          audio.currentTime = 0;
+          clearInterval(fadeInterval);
+        }
+      }, 150);
+    }
+
+    card.addEventListener('click', () => {
+      if (!abierta) {
+        clearInterval(fadeInterval);
+        audio.volume = 1;
+        audio.currentTime = 0;
+        audio.play();
+        abierta = true;
+      } else {
+        fadeOutAudio();
+        abierta = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
